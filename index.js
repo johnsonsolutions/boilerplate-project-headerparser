@@ -29,6 +29,14 @@ var listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
 
-app.get("/api/whoami", function(req, res){
-  res.json({ipaddress: navigator.ipaddress, language: navigator.language, software: navigator.software});
+app.get("/api/whoami", async function(req, res){
+  let ip ="";
+
+  try {
+    const response = await fetch("https://api.ipify.org?format=json");
+    const data = await response.json();
+    ip = data.ip;
+  } catch(ex) { console.error("Failed to get ip.", ex); }
+
+  res.json({ipaddress: ip, language: navigator.language, software: navigator.userAgent});
 });
